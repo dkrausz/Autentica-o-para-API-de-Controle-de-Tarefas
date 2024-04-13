@@ -9,8 +9,8 @@ export const tasksRoute = Router();
 
 const tasksController = new taskController();
 
-tasksRoute.get("/", ensure.existCategory,tasksController.getTaks);
+tasksRoute.get("/", ensure.existCategoryByName,tasksController.getTaks);
 tasksRoute.get("/:id",ensure.existTask,tasksController.getOneTask);
-tasksRoute.post("/",ensure.bodyIsValid(TaskCreateSchema),ensure.existCategory,tasksController.addTask);
-tasksRoute.patch("/:id",ensure.existTask,ensure.bodyIsValid(TaskUpdateSchema),ensure.existCategory,tasksController.updateTask);
+tasksRoute.post("/",ensure.bodyIsValid(TaskCreateSchema),ensure.existCategoryById,tasksController.addTask);
+tasksRoute.patch("/:id",ensure.existTask,ensure.bodyIsValid(TaskUpdateSchema),ensure.existCategoryById,tasksController.updateTask);
 tasksRoute.delete("/:id",ensure.existTask,tasksController.deleteTask);

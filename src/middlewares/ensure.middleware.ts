@@ -1,76 +1,84 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodSchema } from "zod";
+import { ZodSchema, number } from "zod";
 import { prisma } from "../database/prisma";
 
 class ensureMiddleware {
-  private searchByCategoryName = async ({ category }: any) => {
-    const foundCategory = await prisma.category.findFirst({
-      where: { name: category },
-      include: { tasks: true },
-    });
-
-    if (foundCategory) {
-      return foundCategory;
-    } else {
-      return false;
-    }
-  };
-
-  private searchByCategoryId = async (categoryId: number) => {
-    const foundCategory = await prisma.task.findFirst({
-      where: { categoryId: categoryId },
-    });
-    console.log(foundCategory);
-
-    if (foundCategory) {
-      return foundCategory;
-    } else {
-      return false;
-    }
-  };
-
   public bodyIsValid =
     (schema: ZodSchema) =>
-    (req: Request, res: Response, next: NextFunction): void => {
+    (req: Request, res: Response, next: NextFunction): void => {   
       req.body = schema.parse(req.body);
-
       return next();
     };
 
-  public existCategory = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    let foundCategory: any;
-    if (Object.keys(req.query).length != 0) {
-      foundCategory = await this.searchByCategoryName(req.query);
-    } else {
-      if (req.body.categoryId == null) return next();
-      foundCategory = await this.searchByCategoryId(req.body.categoryId);
-    }
+  public existCategoryByName = async (req: Request,res: Response,next: NextFunction) => {
+    const { category } = req.query;
 
-    if (foundCategory === false) {
-      return res.status(404).json({ message: "Category not found" });
+    if (!category) {
+      return  next();
+    }
+    const tasksByCategory = await prisma.task.findMany({
+      where: {
+        category: { name: { equals: category as string, mode: "insensitive" } },
+      },
+      include: { category: true },
+    });
+    if (tasksByCategory) {
+      res.locals.filteredTasks = tasksByCategory;
+     return next();
     } else {
-      res.locals = foundCategory;
-      return next();
+      return res.status(404).json({ message: "Category not found" });
     }
   };
 
-  public existTask = async (
+  public existCategoryById = async (req: Request, res: Response, next: NextFunction ) => {
+    if (!req.body.categoryId) {
+      return next();
+    }
+    const { categoryId } = req.body;
+    const foundCategory = await prisma.category.findFirst({
+      where: { id: categoryId },});
+
+    if (foundCategory) {
+     return next();
+    } 
+    else {
+      return res.status(404).json({ message: "Category not found" });
+    }
+  };
+
+  public existTask = async (req: Request,res: Response,next: NextFunction) => {
+    const { id } = req.params;
+
+    const task = await prisma.task.findFirst({
+      where: { id: Number(id) },
+      include: { category: true },
+    });
+
+    if (task) {
+      res.locals.task = task;  
+     return next();
+    } 
+    else {            
+      return res.status(404).json({ message: "Task not found" });
+    }
+  };
+
+  public existCategoryByParams = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     const { id } = req.params;
-    const task = await prisma.task.findFirst({ where: { id: Number(id) } });
+    const foundCategory = await prisma.category.findFirst({
+      where: { id: Number(id) },
+    });
 
-    if (task) {
-      res.locals.task = task;
-      next();
-    } else {
-      return res.status(404).json({ message: "Task not found" });
+    if (foundCategory) {
+     return next();
+    } 
+    else {
+     
+      return res.status(404).json({ message: "Category nor found" });
     }
   };
 }

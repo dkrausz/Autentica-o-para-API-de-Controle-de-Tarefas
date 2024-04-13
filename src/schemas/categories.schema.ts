@@ -7,8 +7,3 @@ export const CategoriesSchema= z.object({
 
 export const CategoriesCreateSchema= CategoriesSchema.pick({name:true});
 
-// model Category{
-//     id Int @id @default(autoincrement())
-//     name String
-//     tasks Task[]
-//   }
