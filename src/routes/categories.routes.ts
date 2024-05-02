@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { categoryController } from "../controllers";
+import { CategoryController } from "../controllers";
 import { ensure } from "../middlewares";
 import { CategoriesCreateSchema} from "../schemas";
+import { container } from "tsyringe";
+import { CategoriesServices } from "../services";
 
 
 export const categoriesRoutes = Router();
+container.registerSingleton("CategoriesService",CategoriesServices);
 
-const categoriesController = new categoryController();
+ const categoriesController = container.resolve(CategoryController);
 
 
 categoriesRoutes.get("/",categoriesController.getCategories);

@@ -1,9 +1,19 @@
 import { z } from "zod";
 import { TaskSchema,TaskCreateSchema } from "../schemas";
-import { TaskUpdateSchema } from "../schemas/tasks.schema";
+import { TaskReturnBody, TaskUpdateSchema } from "../schemas/tasks.schema";
 
 type TTask = z.infer<typeof TaskSchema>;
 type TCreateTask = z.infer<typeof TaskCreateSchema>;
 type TUpdateTask= z.infer<typeof TaskUpdateSchema>;
+type TReturnBody = z.infer<typeof TaskReturnBody>
 
-export {TTask, TCreateTask,TUpdateTask};
+interface ITasksService{
+    getTasks( id:number,category?:string):Promise<Array<TReturnBody>>
+    getOneTask(task:TTask):Promise<TTask>
+    addTask(newTask:TCreateTask):Promise<TTask>
+    updateTask(id:number, updatedTask:TUpdateTask):Promise<TTask>
+    deleteTask(id:number):Promise<void>
+
+}
+
+export {TTask, TCreateTask,TUpdateTask,ITasksService,TReturnBody};

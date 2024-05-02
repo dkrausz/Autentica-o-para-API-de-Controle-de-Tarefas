@@ -1,7 +1,12 @@
+import { injectable } from "tsyringe";
 import { prisma } from "../database/prisma"
-import { TCategory, TCreateCategory } from "../interfaces";
+import { ICategoryService, TCategory, TCreateCategory } from "../interfaces";
 
-export class CategoriesServices{
+
+
+@injectable()
+
+export class CategoriesServices implements ICategoryService{
 
     getCategories = async ():Promise<Array<TCategory>>=>{
         return await prisma.category.findMany();
@@ -11,7 +16,7 @@ export class CategoriesServices{
         return await prisma.category.create({data:newCategory});
     }
 
-    deleteCategory = async(id:Number)=>{
-        return await prisma.category.delete({where : {id:Number(id)}});
+    deleteCategory = async(id:number):Promise<void>=>{
+         await prisma.category.delete({where : {id:Number(id)}});
     }
 };

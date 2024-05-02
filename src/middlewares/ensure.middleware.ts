@@ -1,34 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodSchema, number } from "zod";
+import { ZodSchema } from "zod";
 import { prisma } from "../database/prisma";
 
 class ensureMiddleware {
+  
   public bodyIsValid =
     (schema: ZodSchema) =>
-    (req: Request, res: Response, next: NextFunction): void => {   
-      req.body = schema.parse(req.body);
+    (req: Request, res: Response, next: NextFunction): void => {           
+      
+      req.body = schema.parse(req.body);      
       return next();
     };
 
-  public existCategoryByName = async (req: Request,res: Response,next: NextFunction) => {
-    const { category } = req.query;
-
-    if (!category) {
-      return  next();
-    }
-    const tasksByCategory = await prisma.task.findMany({
-      where: {
-        category: { name: { equals: category as string, mode: "insensitive" } },
-      },
-      include: { category: true },
-    });
-    if (tasksByCategory) {
-      res.locals.filteredTasks = tasksByCategory;
-     return next();
-    } else {
-      return res.status(404).json({ message: "Category not found" });
-    }
-  };
 
   public existCategoryById = async (req: Request, res: Response, next: NextFunction ) => {
     if (!req.body.categoryId) {

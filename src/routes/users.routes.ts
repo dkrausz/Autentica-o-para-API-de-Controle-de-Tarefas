@@ -1,0 +1,26 @@
+// /user POST cria usuario
+// /user/login POST loga --> email e senha /users/login
+// /user/profile GET --> recupera dados precis de token /users/profile
+
+
+// começar com a injeção de dependencia 
+// criar um middleware de autenticação 
+// criar esquemas do usuario 
+
+import { Router } from "express";
+import { container } from "tsyringe";
+import { authMiddleware, ensure, ensureUser } from "../middlewares";
+import { UserCreateBodySchema, UserLoginSchema, UserSchema } from "../schemas";
+import { UserController } from "../controllers";
+import { UserService } from "../services";
+
+
+
+export const userRoute = Router();
+container.registerSingleton("UserService", UserService);
+
+const userController = container.resolve(UserController);
+
+userRoute.post("/",ensure.bodyIsValid(UserCreateBodySchema), ensureUser.isEmailExist, userController.addUser);
+userRoute.post("/login",ensure.bodyIsValid(UserLoginSchema), userController.loginUser);
+userRoute.get("/profile", authMiddleware.isAuth,userController.retriveUser);

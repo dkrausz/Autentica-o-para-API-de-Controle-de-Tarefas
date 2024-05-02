@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { CategoriesServices } from "../services";
-import { TCreateCategory } from "../interfaces";
+import { ICategoryService, TCreateCategory } from "../interfaces";
+import {  inject, injectable } from "tsyringe";
 
 
-export class categoryController{
+@injectable()
+export class CategoryController{
 
-    private categoriesServices = new CategoriesServices();
+    constructor(@inject("CategoriesService") private categoriesServices:ICategoryService){}
+  
 
     public getCategories = async(req:Request, res:Response):Promise<Response>=>{
 
@@ -20,7 +23,7 @@ export class categoryController{
 
     public deleteCategory = async(req: Request, res:Response):Promise<Response>=>{
         const {id} = req.params;
-       const response = await this.categoriesServices.deleteCategory(Number(id));
+        const response = await this.categoriesServices.deleteCategory(Number(id));
         return res.status(204).json(response);
     }
 
