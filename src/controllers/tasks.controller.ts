@@ -18,29 +18,31 @@ export class taskController {
 
   public getOneTask = async (req: Request, res: Response): Promise<Response> => {
     const { task } = res.locals;
-    const response = await this.taskService.getOneTask(task);
+    const {id} = res.locals.decoded;
+    const response = await this.taskService.getOneTask(task,id);
     return res.status(200).json(response);
   };
 
   public addTask = async (req: Request, res: Response): Promise<Response> => {
     const newTask = req.body;
-    console.log(req.body);
-    
+  
     newTask.userId = res.locals.decoded.id;       
     const tasks = await this.taskService.addTask(newTask);
     return res.status(201).json(tasks);
   };
 
   public updateTask = async (req: Request, res: Response):Promise<Response> => {
-    const  id  = req.params.id;
+    const  taskId  = req.params.id;
+    const {id} = res.locals.decoded;
     const updatedTask = req.body;
-    const response = await this.taskService.updateTask(Number(id), updatedTask);
+    const response = await this.taskService.updateTask(id, Number(taskId), updatedTask);
     return res.status(200).json(response);
   };
 
   public deleteTask = async (req: Request,res: Response): Promise<Response> => {
-    const { id } = res.locals.task;
-    const response = await this.taskService.deleteTask(id);
-    return res.status(204).json(response);
+    const taskId = res.locals.task.id;
+    const {id} = res.locals.decoded;
+    await this.taskService.deleteTask(taskId,id);
+    return res.status(204).json();
   };
 }

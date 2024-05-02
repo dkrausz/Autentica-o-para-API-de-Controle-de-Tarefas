@@ -61,7 +61,7 @@ class ensureMiddleware {
     } 
     else {
      
-      return res.status(404).json({ message: "Category nor found" });
+      return res.status(404).json({ message: "Category not found" });
     }
   };
 }

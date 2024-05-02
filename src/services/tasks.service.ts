@@ -7,17 +7,21 @@ import {
   TTask,
   TUpdateTask,
 } from "../interfaces";
-import { TaskReturnBody } from "../schemas";
+import { TaskReturnBody, TaskSchema } from "../schemas";
 import { AppError } from "../errors/AppError";
 
 @injectable()
 export class TasksServices implements ITasksService {
-  // getTasks = async (id:number, locals?: Array<TTask>): Promise<Array<TTask>> => {
-  //   if (locals) {
-  //     return locals;
-  //   }
-  //   return await prisma.task.findMany({include:{category:true}});
-  // };
+
+  isOwner=async(userId:number,taskId:number):Promise<void>=>{
+   const owner= await prisma.task.findFirst({where:{id:taskId,userId:userId}});
+     
+   if(owner==null){
+    throw new AppError("This user is not the task owner",403);
+   }
+  
+  }
+
 
   getTasks = async (
     id: number,
@@ -48,21 +52,26 @@ export class TasksServices implements ITasksService {
     return TaskReturnBody.array().parse(tasks);
   };
 
-  getOneTask = async (task: TTask): Promise<TTask> => {
-    return task;
+  getOneTask = async (task: TTask,id:number): Promise<TTask> => {
+     
+   await this.isOwner(id,task.id)  
+    return TaskSchema.parse(task);
   };
 
-  addTask = async (newTask: TCreateTask): Promise<TTask> => {
-    console.log(newTask);
 
+  addTask = async (newTask: TCreateTask): Promise<TTask> => {
+    
     return await prisma.task.create({ data: newTask });
   };
 
-  updateTask = async (id: number, updatedTask: TUpdateTask): Promise<TTask> => {
+  updateTask = async (userId:number, id: number, updatedTask: TUpdateTask): Promise<TTask> => {
+    await this.isOwner(userId,id);
     return await prisma.task.update({ where: { id }, data: updatedTask });
   };
 
-  deleteTask = async (id: number) => {
-    await prisma.task.delete({ where: { id } });
+  deleteTask = async (taskId:number,id: number) => {   
+   
+    await this.isOwner(id,taskId);
+    await prisma.task.delete({ where: { id:taskId } });
   };
 }

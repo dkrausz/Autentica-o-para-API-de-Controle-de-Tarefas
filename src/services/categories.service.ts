@@ -1,6 +1,8 @@
 import { injectable } from "tsyringe";
 import { prisma } from "../database/prisma"
 import { ICategoryService, TCategory, TCreateCategory } from "../interfaces";
+import { AppError } from "../errors/AppError";
+import { CategoriesSchema } from "../schemas";
 
 
 
@@ -8,15 +10,30 @@ import { ICategoryService, TCategory, TCreateCategory } from "../interfaces";
 
 export class CategoriesServices implements ICategoryService{
 
+    isOwner=async(userId:number,categoryId:number):Promise<void>=>{       
+        const owner= await prisma.category.findFirst({where:{id:categoryId,userId:userId}});      
+       
+        
+         if(owner==null){
+           
+         throw new AppError("This user is not the task owner", 403);
+        }
+       
+       }
+
+
     getCategories = async ():Promise<Array<TCategory>>=>{
-        return await prisma.category.findMany();
+        const categories = await prisma.category.findMany();
+        return CategoriesSchema.array().parse(categories);
     }
 
     addCategory = async(newCategory:TCreateCategory):Promise<TCategory>=>{
-        return await prisma.category.create({data:newCategory});
+        const category= await prisma.category.create({data:newCategory});
+        return CategoriesSchema.parse(category);
     }
 
-    deleteCategory = async(id:number):Promise<void>=>{
-         await prisma.category.delete({where : {id:Number(id)}});
+    deleteCategory = async(caregoryId:number,userid:number):Promise<void>=>{
+       await this.isOwner(userid,caregoryId);
+         await prisma.category.delete({where : {id:Number(caregoryId)}});
     }
 };

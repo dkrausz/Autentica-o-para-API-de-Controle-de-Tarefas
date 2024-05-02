@@ -6,7 +6,7 @@ import { JsonWebTokenError } from "jsonwebtoken";
  class HandleErrorsMidllewares{
     public static execute=(error:Error, req:Request, res: Response, next: NextFunction):Response=>{
         if(error instanceof ZodError){
-            return res.status(409).json({error: error.errors});
+            return res.status(400).json({error: error.errors});
         }
 
         if(error instanceof AppError){
@@ -16,7 +16,7 @@ import { JsonWebTokenError } from "jsonwebtoken";
         if(error instanceof JsonWebTokenError){
             return res.status(401).json({message: error.message});
         }
-              
+                       
         return res.status(500).json({message: "Internal server error"});
 
     }

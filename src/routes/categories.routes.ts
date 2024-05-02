@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { CategoryController } from "../controllers";
-import { ensure } from "../middlewares";
+import { authMiddleware, ensure } from "../middlewares";
 import { CategoriesCreateSchema} from "../schemas";
 import { container } from "tsyringe";
 import { CategoriesServices } from "../services";
@@ -13,5 +13,5 @@ container.registerSingleton("CategoriesService",CategoriesServices);
 
 
 categoriesRoutes.get("/",categoriesController.getCategories);
-categoriesRoutes.post("/",ensure.bodyIsValid(CategoriesCreateSchema),categoriesController.addCategory);
-categoriesRoutes.delete("/:id", ensure.existCategoryByParams, categoriesController.deleteCategory)
+categoriesRoutes.post("/",authMiddleware.isAuth,ensure.bodyIsValid(CategoriesCreateSchema),categoriesController.addCategory);
+categoriesRoutes.delete("/:id",authMiddleware.isAuth, ensure.existCategoryByParams, categoriesController.deleteCategory)

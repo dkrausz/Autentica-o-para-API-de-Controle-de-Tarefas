@@ -9,10 +9,10 @@ type TReturnBody = z.infer<typeof TaskReturnBody>
 
 interface ITasksService{
     getTasks( id:number,category?:string):Promise<Array<TReturnBody>>
-    getOneTask(task:TTask):Promise<TTask>
+    getOneTask(task:TTask, id:number):Promise<TTask>
     addTask(newTask:TCreateTask):Promise<TTask>
-    updateTask(id:number, updatedTask:TUpdateTask):Promise<TTask>
-    deleteTask(id:number):Promise<void>
+    updateTask(UserId:number,id:number, updatedTask:TUpdateTask):Promise<TTask>
+    deleteTask(taskId:number,id:number):Promise<void>
 
 }
 

@@ -5,8 +5,8 @@ import { verify } from "jsonwebtoken";
 class AuthMiddleware{
 
     public isAuth = async(req:Request, res:Response,next:NextFunction)=>{
-        const {authorization} = req.headers;                      
-
+        const {authorization} = req.headers;                    
+   
         if(!authorization){
             throw new AppError( "Token is required" ,401);
         }
@@ -21,9 +21,7 @@ class AuthMiddleware{
     return next();
     }
 
-    public isAccountOwner= async(req:Request, res:Response,next:NextFunction)=>{
-
-    }
+   
 
 }
 
