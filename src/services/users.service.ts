@@ -3,14 +3,11 @@ import { injectable } from "tsyringe";
 import { IUserService, TCreateUser, TReturnUser, TUserLogin,TUserLoginReturn } from "../interfaces";
 import { prisma } from "../database/prisma";
 import { UserLoginReturnSchema, UserReturnSchema } from "../schemas";
-import { compare, hash } from "bcrypt";
+import { compare, hash } from "bcryptjs";
 import {sign} from "jsonwebtoken";
 import { AppError } from "../errors/AppError";
 
-// Rota de cadastro de usuários.
-// /users/login POST
-// Rota de login de usuários.
-// /users/profile GET
+
 @injectable()
 
 export class UserService implements IUserService{

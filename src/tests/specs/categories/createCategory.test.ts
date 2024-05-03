@@ -25,7 +25,7 @@ describe("create category", async () => {
 
     expect(data.name).toBeDefined();
     expect(data.name).toBeTypeOf("string");
-
+   
     expect(data.userId).toBeDefined();
     expect(data.userId).toBeTypeOf("number");
   });

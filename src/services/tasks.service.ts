@@ -23,10 +23,8 @@ export class TasksServices implements ITasksService {
   }
 
 
-  getTasks = async (
-    id: number,
-    category?: string
-  ): Promise<Array<TReturnBody>> => {
+  getTasks = async (id: number,category?: string): Promise<Array<TReturnBody>> => {
+    
     if (category) {
       const tasks = await prisma.task.findMany({
         where: {
@@ -53,7 +51,7 @@ export class TasksServices implements ITasksService {
   };
 
   getOneTask = async (task: TTask,id:number): Promise<TTask> => {
-     
+        
    await this.isOwner(id,task.id)  
     return TaskSchema.parse(task);
   };

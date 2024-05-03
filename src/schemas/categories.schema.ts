@@ -6,4 +6,5 @@ export const CategoriesSchema= z.object({
     });
 
 export const CategoriesCreateSchema= CategoriesSchema.pick({name:true});
+export const CategoriesReturnSchema = CategoriesSchema.extend({userId:z.number()});
 

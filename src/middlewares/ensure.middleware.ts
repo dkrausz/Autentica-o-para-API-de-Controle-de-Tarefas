@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ZodSchema } from "zod";
 import { prisma } from "../database/prisma";
+import { AppError } from "../errors/AppError";
 
 class ensureMiddleware {
   
@@ -30,8 +31,7 @@ class ensureMiddleware {
   };
 
   public existTask = async (req: Request,res: Response,next: NextFunction) => {
-    const { id } = req.params;
-
+    const { id } = req.params;    
     const task = await prisma.task.findFirst({
       where: { id: Number(id) },
       include: { category: true },
@@ -42,7 +42,8 @@ class ensureMiddleware {
      return next();
     } 
     else {            
-      return res.status(404).json({ message: "Task not found" });
+            
+      throw new AppError("Task not found" ,404);
     }
   };
 
@@ -60,8 +61,8 @@ class ensureMiddleware {
      return next();
     } 
     else {
-     
-      return res.status(404).json({ message: "Category not found" });
+     throw new AppError("Category not found" ,404);
+      return res.status(404).json({ message: "Category not found" });;
     }
   };
 }

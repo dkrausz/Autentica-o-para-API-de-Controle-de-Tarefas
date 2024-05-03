@@ -9,7 +9,6 @@ export class CategoryController{
 
     constructor(@inject("CategoriesService") private categoriesServices:ICategoryService){}
   
-
     public getCategories = async(req:Request, res:Response):Promise<Response>=>{
 
         const response = await this.categoriesServices.getCategories();
@@ -22,6 +21,7 @@ export class CategoryController{
         
         newCategory.userId=id;
         const response = await this.categoriesServices.addCategory(newCategory);
+               
         return res.status(201).json(response);
     }
 

@@ -6,8 +6,8 @@ import { secondUserMock } from "../../mocks/user.mocks";
 import { request } from "../../setupFiles";
 import { categoryDefaultExpects } from "../../utils/categoryDefaultExpects";
 import {
-   generateAuthentication,
-   generateInvalidToken,
+  generateAuthentication,
+  generateInvalidToken,
 } from "../../utils/generateAuthentication";
 import { taskDefaultExpects } from "../../utils/taskDefaultExpects";
 

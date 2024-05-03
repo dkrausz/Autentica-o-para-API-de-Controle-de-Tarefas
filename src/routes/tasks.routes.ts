@@ -12,7 +12,7 @@ container.registerSingleton("TasksServices" , TasksServices);
 
 const tasksController =container.resolve(taskController);
 
-tasksRoute.get("/",authMiddleware.isAuth,tasksController.getTasks);
+tasksRoute.get("/",authMiddleware.isAuth,authMiddleware.isIdValid,tasksController.getTasks);
 tasksRoute.get("/:id",authMiddleware.isAuth,ensure.existTask,tasksController.getOneTask);
 tasksRoute.post("/",authMiddleware.isAuth,ensure.bodyIsValid(TaskCreateSchema),ensure.existCategoryById,tasksController.addTask);
 tasksRoute.patch("/:id",authMiddleware.isAuth,ensure.existTask,ensure.bodyIsValid(TaskUpdateSchema),ensure.existCategoryById,tasksController.updateTask);
