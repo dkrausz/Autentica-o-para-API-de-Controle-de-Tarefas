@@ -9,8 +9,8 @@ import { handleErrors } from "./middlewares/handleErrorsMiddlewares";
 
 export const app = express();
 
-app.use(cors());
 app.use(helmet());
+app.use(cors());
 app.use(json());
 app.use("/tasks", tasksRoute);
 app.use("/categories", categoriesRoutes);
