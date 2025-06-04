@@ -1,4 +1,4 @@
-# 🏁 Entrega 2 - API de Controle de Tarefas com Autenticação
+# 🏁 API de Controle de Tarefas com Autenticação
 
 ## 📚 Descrição
 
