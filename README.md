@@ -322,3 +322,9 @@ npm run test
 ```
 
 ---
+
+## 📝 Licença
+
+Este projeto é de uso educacional e não possui uma licença específica.
+
+---
