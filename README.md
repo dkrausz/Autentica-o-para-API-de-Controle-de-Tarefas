@@ -298,8 +298,8 @@ Somente o dono da categoria pode excluí-la.
 ## 📦 Como rodar localmente
 
 ```bash
-git clone <url-do-repositório>
-cd <nome-da-pasta>
+git clone https://github.com/dkrausz/Autentica-o-para-API-de-Controle-de-Tarefas
+cd Autentica-o-para-API-de-Controle-de-Tarefas
 npm install
 ```
 
